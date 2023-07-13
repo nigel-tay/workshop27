@@ -7,8 +7,8 @@
 </head>
 <body>
     <form action="/review" method="POST" th:object="${game}">
-        <input type="hidden" name="gid" th:value="*{gid}">
         <input type="hidden" name="name" th:value="*{name}">
+        <p>Game ID: <input type="text" name="gid" th:value="*{gid}"></p>
         <p>Review for <span th:text="*{name}"></span></p>
         <p>User: <input type="text" name="user"></p>
         <p>Rating: <input type="text" name="rating"></p>
