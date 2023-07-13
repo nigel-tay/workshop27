@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+<body>
+    <form action="/review" method="POST" th:object="${game}">
+        <input type="hidden" name="gid" th:value="*{gid}">
+        <input type="hidden" name="name" th:value="*{name}">
+        <p>Review for <span th:text="*{name}"></span></p>
+        <p>User: <input type="text" name="user"></p>
+        <p>Rating: <input type="text" name="rating"></p>
+        <p>Comment: <input type="text" name="comment"></p>
+        <p>Posted on: <input type="date" name="posted"></p>
+        <input type="submit" value="Post review">
+    </form>
+</body>
+</html>
+
+<!-- "_id" : ObjectId("64af9bd16a179e639c899356"),
+    "gid" : NumberInt(12),
+    "name" : "Ra",
+    "year" : NumberInt(1999),
+    "ranking" : NumberInt(144),
+    "users_rated" : NumberInt(17433),
+    "url" : "https://www.boardgamegeek.com/boardgame/12/ra",
+    "image" : "https://cf.geekdo-images.com/micro/img/dLCB1zVufOOwUH41u39hwZSunmE=/fit-in/64x64/pic3013552.jpg" -->
