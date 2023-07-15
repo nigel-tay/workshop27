@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Review</title>
+</head>
+<body>
+    <h1>Update review</h1>
+    <form action="@{/review/${review_id}}" method="POST">
+        <p>Comment: <input type="text" name="comment"></p>
+        <p>Rating: <input type="text" name="rating"></p>
+        <p>Posted on: <input type="date" name="posted"></p>
+    
+        <input type="submit" placeholder="Update Review">
+    </form>
+</body>
+</html>

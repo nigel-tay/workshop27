@@ -6,8 +6,12 @@
     <title>Search</title>
 </head>
 <body>
-    <form action="/game">
+    <form action="/game" method="GET">
         <input type="text" name="gid" placeholder="Input game ID">
+        <input type="submit" value="Search for game">
+    </form>
+    <form action="/update" method="GET">
+        <input type="text" name="review_id" placeholder="Input Review ID">
         <input type="submit" value="Search for game">
     </form>
 </body>
