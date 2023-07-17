@@ -77,10 +77,8 @@ public class ReviewRepository {
         ObjectId objectId = new ObjectId(reviewId);
         Criteria criteria = Criteria.where(F_OBJECTID).is(objectId);
         MatchOperation m = Aggregation.match(criteria);
-        // UnwindOperation u = Aggregation.unwind(F_EDITED);
         GroupOperation g = Aggregation.group(F_EDITED);
         SortOperation s = Aggregation.sort(Sort.by(Direction.ASC, "edited.posted"));
-        // LimitOperation l = Aggregation.limit(1);
         Aggregation pipeline = Aggregation.newAggregation(m, g, s);
 
         return mTemplate.aggregate(pipeline, C_REVIEW, Document.class);

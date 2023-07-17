@@ -70,6 +70,17 @@ public class BoardGameController {
 
         return ResponseEntity.status(200).body(result);
     }
+    
+    @GetMapping(path="/review/{review_id}/history", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getHistory(@PathVariable String review_id) {
+        String result = gService.getHistory(review_id);
+
+        if (result == null) {
+            return ResponseEntity.status(400).body("Review ID provided does not exist");
+        }
+
+        return ResponseEntity.status(200).body(result);
+    }
 
     /**
      * "_id" : ObjectId("64af9bd16a179e639c899356"),
@@ -81,6 +92,24 @@ public class BoardGameController {
         "url" : "https://www.boardgamegeek.com/boardgame/12/ra",
         "image" : "https://cf.geekdo-images.com/micro/img/dLCB1zVufOOwUH41u39hwZSunmE=/fit-in/64x64/pic3013552.jpg"
      */
+
+     /**
+     * {
+        user: <name form field>,
+        rating: <latest rating>,
+        comment: <latest comment>,
+        ID: <game id form field>,
+        posted: <date>,
+        name: <The board game’s name as per ID>,
+        edited: [
+        { comment: ..., rating: ..., posted: ... },
+        { comment: ..., rating: ..., posted: ... },
+        { comment: ..., rating: ..., posted: ... }
+        ],
+        timestamp: <result timestamp>
+        }
+
+     */
     
     //  DONE
     // POST /review
@@ -89,9 +118,10 @@ public class BoardGameController {
     // PUT /review/{review_id}
     // consumes = application/json
 
-    // TO DO
     // GET /review/{review_id}
     // produces = application/json
+    
+    // TO DO
 
     // GET /review/{review_id}/history
     // produces = aplciation/json

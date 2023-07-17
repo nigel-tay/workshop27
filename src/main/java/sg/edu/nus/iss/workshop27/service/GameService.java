@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import sg.edu.nus.iss.workshop27.repository.GameRepository;
@@ -123,17 +124,42 @@ public class GameService {
         return buildJson(user, rating, comment, gid, name, edited, timestamp).toString();
     }
 
-    /**
-     * 
-        {
-            "user" : String (reviewResult),
-            "rating" : String (latestReviewResult),
-            "comment" : String (latestReviewResult),
-            "gid" : String (reviewResult),
-            "name" : String (reviewResult),
-            "edited" : Boolean true/false,
-            "posted" : String new Date
+    public String getHistory(String reviewId) {
+        List<Document> reviewResult = rRepo.getReviewById(reviewId);
+        
+        if (reviewResult.get(0) == null) {
+            return null;
         }
+        
+        Document review = reviewResult.get(0);
+        
+        String user = review.getString("user");
+        String rating = review.getString("rating");
+        String comment = review.getString("comment");
+        String gid = review.getString("gid");
+        String name = review.getString("name");
+        List<JsonObject> edited = new ArrayList<>();
+        Date timestamp = new Date();
+
+        for (Document dEdited: review.getList("edited", Document.class)) {
+            JsonObject editedJson = Json.createObjectBuilder()
+                                            .add("comment", dEdited.getString("comment"))
+                                            .add("rating", dEdited.getString("rating"))
+                                            .add("posted", dEdited.getString("posted"))
+                                            .build();
+            edited.add(editedJson);
+        }
+
+        JsonObject json = Json.createObjectBuilder()
+                            .add("user", user)
+                            .add("rating", rating)
+                            .add("comment", comment)
+                            .add("gid", gid)
+                            .add("name", name)
+                            .add("edited", Json.createArrayBuilder(edited))
+                            .add("timestamp", timestamp.toString())
+                            .build();
+        
+        return json.toString();
     }
-     */
 }
