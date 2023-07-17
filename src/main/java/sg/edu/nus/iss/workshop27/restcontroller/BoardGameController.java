@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.workshop27.restcontroller;
 
+import java.text.ParseException;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class BoardGameController {
     }
 
     @GetMapping(path="/review/{review_id}", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getLatestReviewById(@PathVariable String review_id) {
+    public ResponseEntity<String> getLatestReviewById(@PathVariable String review_id) throws ParseException {
         String result = gService.getLatestReviewById(review_id);
 
         if (result == null) {

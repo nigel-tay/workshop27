@@ -1,5 +1,8 @@
 package sg.edu.nus.iss.workshop27.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +73,7 @@ public class GameService {
         return rRepo.updateReview(updatedReview, objectId);
     }
 
-    public String getLatestReviewById(String reviewId) {
+    public String getLatestReviewById(String reviewId) throws ParseException {
         List<Document> reviewResult = rRepo.getReviewById(reviewId);
 
         if (reviewResult.get(0) == null) {
@@ -88,18 +91,31 @@ public class GameService {
         String name = review.getString("name");
         Boolean edited = false;
         Date timestamp = null;
+        Date posted = null;
         
-        if (latestReviewResult.getMappedResults().get(0) != null) {
-            Document latestReview = (Document)latestReviewResult.getMappedResults().get(0).get("_id");
-            // edited false
-            rating = latestReview.getString("rating");
-            comment = latestReview.getString("comment");
+        if (!latestReviewResult.getMappedResults().isEmpty()) {
+            Document latestReview = latestReviewResult.getMappedResults().get(0);
+            for (Document oreview: latestReview.getList("_id", Document.class)) {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+                Date postedDate = formatter.parse(oreview.getString("posted"));
+
+                if (posted == null) {
+                    posted = postedDate;
+                    rating = oreview.getString("rating");
+                    comment = oreview.getString("comment");
+                }
+                else if (posted.getTime() < postedDate.getTime()) {
+                    posted = postedDate;
+                    rating = oreview.getString("rating");
+                    comment = oreview.getString("comment");
+                }
+            }
             edited = true;
             timestamp = new Date();
 
             return buildJson(user, rating, comment, gid, name, edited, timestamp).toString();
         }
-        // edited true
+
         rating = review.getString("rating");
         comment = review.getString("comment");
         timestamp = new Date();
