@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.workshop27.service;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -124,22 +127,50 @@ public class GameService {
         return buildJson(user, rating, comment, gid, name, edited, timestamp).toString();
     }
 
-    public String getHistory(String reviewId) {
+    public String getHistory(String reviewId) throws ParseException {
         List<Document> reviewResult = rRepo.getReviewById(reviewId);
+        AggregationResults<Document> latestReviewResult = rRepo.getLatestReviewById(reviewId);
         
         if (reviewResult.get(0) == null) {
             return null;
         }
-        
+
         Document review = reviewResult.get(0);
-        
+
         String user = review.getString("user");
-        String rating = review.getString("rating");
-        String comment = review.getString("comment");
         String gid = review.getString("gid");
         String name = review.getString("name");
         List<JsonObject> edited = new ArrayList<>();
         Date timestamp = new Date();
+        String rating = "";
+        String comment = "";
+        Date posted = null;
+
+        if (!latestReviewResult.getMappedResults().isEmpty()) {
+            
+            Document latestReview = latestReviewResult.getMappedResults().get(0);
+            for (Document oreview: latestReview.getList("_id", Document.class)) {
+
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");  
+                Date postedDate = formatter.parse(oreview.getString("posted"));
+
+                if (posted == null) {
+                    posted = postedDate;
+                    rating = oreview.getString("rating");
+                    comment = oreview.getString("comment");
+                }
+                else if (posted.getTime() < postedDate.getTime()) {
+                    posted = postedDate;
+                    rating = oreview.getString("rating");
+                    comment = oreview.getString("comment");
+                }
+            }
+        }
+        else {
+            rating = review.getString("rating");
+            comment = review.getString("comment");
+        }
+        
 
         for (Document dEdited: review.getList("edited", Document.class)) {
             JsonObject editedJson = Json.createObjectBuilder()

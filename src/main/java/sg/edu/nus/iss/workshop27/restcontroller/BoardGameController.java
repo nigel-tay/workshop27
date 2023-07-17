@@ -72,7 +72,7 @@ public class BoardGameController {
     }
     
     @GetMapping(path="/review/{review_id}/history", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getHistory(@PathVariable String review_id) {
+    public ResponseEntity<String> getHistory(@PathVariable String review_id) throws ParseException {
         String result = gService.getHistory(review_id);
 
         if (result == null) {
